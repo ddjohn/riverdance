@@ -25,6 +25,7 @@ void StompService::callback(std::string message)
         {
             ConnectedFrame f("1.2");
             server->send(f.marshall());    
+            state = ConnectionStates::CONNECTED;
         }
         else
         {
@@ -33,6 +34,14 @@ void StompService::callback(std::string message)
             server->send(f.marshall());                
         }
     }
+
+    if(state != ConnectionStates::CONNECTED)
+    {
+        ErrorFrame f("Not connected");
+        server->send(f.marshall());                
+    }
+    else 
+    {
 
     if(temp->command == "DISCONNECT")
     {
@@ -48,6 +57,7 @@ void StompService::callback(std::string message)
         AckFrame frame("id1");
         server->send(frame.marshall());
     }
-
+    
+    }
     delete temp;
 }
